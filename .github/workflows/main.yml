@@ -1,0 +1,34 @@
+name: Run Jupyter Notebook
+
+on: [push]
+
+jobs:
+  run_notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install numpy pandas scikit-learn jupyter nbconvert opencv-python matplotlib scipy
+
+      - name: List files before running
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in the repo:"
+          ls -R
+
+      - name: Convert Jupyter Notebook to Python script
+        run: |
+          jupyter nbconvert --to script KabirLab5.ipynb
+          mv KabirLab5.txt KabirLab5.py || true  # In case the conversion renames it differently
+
+      - name: Run the converted Python script
+        run: python KabirLab5.py
